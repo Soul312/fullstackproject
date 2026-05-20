@@ -1,8 +1,9 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import authService from './authService';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const isAuthenticated = !!localStorage.getItem('jwtToken');
+  const isAuthenticated = authService.isAuthenticated();
 
   return (
     <Route
