@@ -23,8 +23,16 @@ export default class Login extends Component {
       .then(() => {
         this.props.history.push('/voitures');
       })
-      .catch(() => {
-        this.setState({ error: 'Identifiants invalides. Veuillez reessayer.' });
+      .catch((error) => {
+        if (!error?.response) {
+          this.setState({ error: "API indisponible. Verifiez l'URL et que le backend est demarre." });
+          return;
+        }
+        if (error.response.status === 401) {
+          this.setState({ error: 'Identifiants invalides. Veuillez reessayer.' });
+          return;
+        }
+        this.setState({ error: `Erreur API: ${error.response.status}` });
       });
   };
 
