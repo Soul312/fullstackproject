@@ -60,6 +60,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Disable the plain JAR so only the executable fat JAR is produced
+tasks.named('jar') {
+    enabled = false
+}
+
 // This is a comment to force a project refresh
 tasks.named('test') {
     useJUnitPlatform()
