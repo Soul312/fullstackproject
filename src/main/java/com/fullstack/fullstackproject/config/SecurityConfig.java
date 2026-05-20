@@ -51,7 +51,12 @@ public class SecurityConfig {
             .password(passwordEncoder().encode("password"))
             .roles("USER")
             .build();
-        return new InMemoryUserDetailsManager(user);
+        UserDetails adminUser = User.builder()
+            .username("admin")
+            .password(passwordEncoder().encode("secret"))
+            .roles("ADMIN")
+            .build();
+        return new InMemoryUserDetailsManager(user, adminUser);
     }
 
     @Bean
@@ -61,11 +66,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder)
-            .and()
-            .build();
+        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        return builder.build();
     }
 
     @Bean

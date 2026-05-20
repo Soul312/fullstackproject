@@ -51,12 +51,12 @@ docker compose -f compose.yaml up -d --build
 
 All API endpoints use HTTP Basic Auth by default.
 
-| Field    | Value    |
-|----------|----------|
-| Username | `admin`  |
-| Password | `secret` |
+| Context                      | Username | Password |
+|-----------------------------|----------|----------|
+| Frontend login (port 3000)  | `user`   | `password` |
+| Backend direct API access   | `admin`  | `secret` |
 
-Credentials are configured in `src/main/resources/application.properties`.
+Credentials are configured in `src/main/resources/application.properties` and `src/main/java/com/fullstack/fullstackproject/config/SecurityConfig.java`.
 
 ---
 
@@ -76,6 +76,7 @@ docker compose -f docker-compose.yml down -v
 
 - Docker profile settings live in `src/main/resources/application-docker.properties`.
 - The backend container listens on **8082** internally and is mapped to **9090** on your host.
+- If the backend is running on a different port, set `REACT_APP_API_BASE_URL` before starting the React UI.
 - MySQL data persists in a named volume (`db-data`).
 
 ---
