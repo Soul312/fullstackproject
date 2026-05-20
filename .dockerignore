@@ -1,0 +1,28 @@
+# Build outputs (we build inside Docker now)
+build/
+.gradle/
+out/
+
+# IDE files
+.idea/
+*.iml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# React app (has its own Docker build)
+src/main/webapp/reactjs/node_modules/
+
+# Docker files
+docker-compose.yml
+compose.yaml
+Dockerfile
+
+# Env files
+.env
+.mysqlenv
+
+# Docs
+*.md
