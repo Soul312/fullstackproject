@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Form, Col, Row, Button } from 'react-bootstrap';
+import { Card, Form, Col, Row, Button, Alert } from 'react-bootstrap';
 import authService from './authService';
 
 export default class Login extends Component {
@@ -7,7 +7,8 @@ export default class Login extends Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      error: ''
     };
   }
 
@@ -17,15 +18,13 @@ export default class Login extends Component {
 
   handleLogin = (event) => {
     event.preventDefault();
+    this.setState({ error: '' });
     authService.login(this.state.username, this.state.password)
-      .then(response => {
-        if (response.data.token) {
-          localStorage.setItem('jwtToken', response.data.token);
-          this.props.history.push('/voitures');
-        }
+      .then(() => {
+        this.props.history.push('/voitures');
       })
-      .catch(error => {
-        console.error("Login error", error);
+      .catch(() => {
+        this.setState({ error: 'Identifiants invalides. Veuillez reessayer.' });
       });
   };
 
@@ -38,6 +37,9 @@ export default class Login extends Component {
               <h3>Login</h3>
             </Card.Header>
             <Card.Body>
+              {this.state.error && (
+                <Alert variant="danger">{this.state.error}</Alert>
+              )}
               <Form onSubmit={this.handleLogin}>
                 <Form.Group controlId="formUsername">
                   <Form.Label>Username</Form.Label>
@@ -61,7 +63,7 @@ export default class Login extends Component {
                     placeholder="Password"
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit" block>
+                <Button variant="primary" type="submit" className="w-100">
                   Login
                 </Button>
               </Form>

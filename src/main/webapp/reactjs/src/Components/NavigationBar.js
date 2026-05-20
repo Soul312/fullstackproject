@@ -1,19 +1,20 @@
 import React from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
+import authService from './authService';
 
 class NavigationBar extends React.Component {
   handleLogout = () => {
-    localStorage.removeItem('jwtToken');
+    authService.logout();
     this.props.history.push('/login');
   };
 
   render() {
-    const isAuthenticated = !!localStorage.getItem('jwtToken');
+    const isAuthenticated = authService.isAuthenticated();
 
     return (
       <Navbar bg="dark" variant="dark">
-        <Link to={""} className="navbar-brand">
+        <Link to="/" className="navbar-brand">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/1/17/Tata_Tamo_Racemo.jpg"
             width="25"
@@ -21,7 +22,7 @@ class NavigationBar extends React.Component {
             alt="logo"
           />
         </Link>
-        <Nav className="mr-auto">
+        <Nav className="me-auto">
           {isAuthenticated && (
             <>
               <Link to={"/add"} className="nav-link">Ajouter une Voiture</Link>
@@ -33,7 +34,7 @@ class NavigationBar extends React.Component {
           {isAuthenticated ? (
             <Button variant="outline-info" onClick={this.handleLogout}>Logout</Button>
           ) : (
-            <Link to={"/login"} className="nav-link">Login</Link>
+            <Link to="/login" className="nav-link">Login</Link>
           )}
         </Nav>
       </Navbar>

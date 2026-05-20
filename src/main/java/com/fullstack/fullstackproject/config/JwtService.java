@@ -3,6 +3,7 @@ package com.fullstack.fullstackproject.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -24,7 +25,7 @@ public class JwtService {
         return token;
     }
 
-    public String getAuthUser(javax.servlet.http.HttpServletRequest request) {
+    public String getAuthUser(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         if (token != null) {
             String user = Jwts.parserBuilder()

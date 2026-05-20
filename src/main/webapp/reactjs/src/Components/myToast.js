@@ -25,7 +25,7 @@ export default class MyToast extends Component {
               : "bg-danger"}`}
             closeButton={false}
           >
-            <strong className="mr-auto">
+            <strong className="me-auto">
               {this.props.children.type === "success" ? "Succès" : "Supprimé"}
             </strong>
           </Toast.Header>
