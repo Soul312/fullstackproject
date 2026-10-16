@@ -10,10 +10,10 @@ services:
       - "9090:8082"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      MYSQL_HOST: mysqldb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: change-me
-      MYSQL_PORT: 3306
+      MYSQL_HOST: ${MYSQL_HOST:?set it in .env - copy .env.example}
+      MYSQL_USER: ${MYSQL_USER:?set it in .env - copy .env.example}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set it in .env - copy .env.example}
+      MYSQL_PORT: ${MYSQL_PORT:?set it in .env - copy .env.example}
     depends_on:
       mysqldb:
         condition: service_healthy
@@ -36,13 +36,12 @@ services:
     image: mysql:9.0
     ports:
       - "3307:3306"
-    environment:
-      MYSQL_DATABASE: miola
-      MYSQL_ROOT_PASSWORD: change-me
+    env_file:
+      - .mysqlenv
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p<password>"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
       interval: 5s
       timeout: 5s
       retries: 10

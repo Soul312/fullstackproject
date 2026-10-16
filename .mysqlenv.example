@@ -1,0 +1,4 @@
+# Copy to .mysqlenv. Passed to the MySQL container as env_file.
+# MYSQL_ROOT_PASSWORD must match MYSQL_PASSWORD in .env.
+MYSQL_ROOT_PASSWORD=change-me
+MYSQL_DATABASE=miola

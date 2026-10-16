@@ -8,7 +8,7 @@ Full-stack car management app built with **Spring Boot**, **React**, and **MySQL
 
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Quick Start — One Command](#quick-start--one-command)
+- [Quick Start](#quick-start)
 - [Step-by-Step Guide](#step-by-step-guide)
 - [Accessing the App](#accessing-the-app)
 - [Default Credentials](#default-credentials)
@@ -43,8 +43,8 @@ FullStackTp/
 ├── build.gradle                # Gradle build config (Java 17)
 ├── settings.gradle
 ├── gradlew / gradlew.bat       # Gradle wrapper (no local Gradle needed)
-├── .env                        # MySQL connection env vars
-├── .mysqlenv                   # MySQL root credentials
+├── .env.example                # Template for .env (MySQL connection vars)
+├── .mysqlenv.example           # Template for .mysqlenv (MySQL root credentials)
 ├── src/
 │   ├── main/
 │   │   ├── java/...            # Spring Boot backend (REST API + Security)
@@ -61,15 +61,21 @@ FullStackTp/
 
 ---
 
-## Quick Start — One Command
+## Quick Start
 
 ```bash
 git clone <repo-url> FullStackTp
 cd FullStackTp
+cp .env.example .env
+cp .mysqlenv.example .mysqlenv
+# edit both: set MYSQL_PASSWORD and MYSQL_ROOT_PASSWORD to the same value
 docker compose -f docker-compose.yml up --build
 ```
 
-That's it. Wait ~2 minutes for the first build, then open **http://localhost:3000**.
+Wait ~2 minutes for the first build, then open **http://localhost:3000**.
+
+`.env` and `.mysqlenv` are git-ignored, so your credentials stay on your machine. Compose fails
+fast with a readable error if they are missing.
 
 ---
 
@@ -82,7 +88,17 @@ git clone <repo-url> FullStackTp
 cd FullStackTp
 ```
 
-### 2. Verify Docker is running
+### 2. Create your environment files
+
+```bash
+cp .env.example .env
+cp .mysqlenv.example .mysqlenv
+```
+
+Open both and replace `change-me`. `MYSQL_PASSWORD` in `.env` and `MYSQL_ROOT_PASSWORD` in
+`.mysqlenv` must match — the backend authenticates to MySQL as `root` with that password.
+
+### 3. Verify Docker is running
 
 ```bash
 docker --version
@@ -92,7 +108,7 @@ docker compose version
 # Expected: Docker Compose version v2.x.x
 ```
 
-### 3. Build and start all services
+### 4. Build and start all services
 
 ```bash
 docker compose -f docker-compose.yml up --build
@@ -106,7 +122,7 @@ This single command:
 
 > **First run takes ~2-3 minutes** (downloading base images + compiling). Subsequent runs use cached layers and start in seconds.
 
-### 4. Watch the logs
+### 5. Watch the logs
 
 You'll see output from all three services. Look for these success indicators:
 
@@ -117,7 +133,7 @@ springboot-app-1     | Started FullStackTpApplication in XX seconds
 react-app-1          | webpack compiled with 1 warning
 ```
 
-### 5. Open the app
+### 6. Open the app
 
 Once you see all three success messages, open your browser:
 
@@ -203,7 +219,7 @@ docker compose -f docker-compose.yml up --build react-app
 docker compose -f docker-compose.yml exec springboot-app sh
 
 # MySQL container
-docker compose -f docker-compose.yml exec mysqldb mysql -uroot -p<password> miola
+docker compose -f docker-compose.yml exec mysqldb sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" miola'
 ```
 
 ---
@@ -253,17 +269,20 @@ docker compose -f docker-compose.yml exec mysqldb mysql -uroot -p<password> miol
 | React          | 3000          | 3000      | `docker-compose.yml`     |
 | MySQL          | 3306          | 3307      | `docker-compose.yml`     |
 
-### Environment Variables (docker-compose.yml)
+### Environment Variables
+
+The MySQL values come from `.env` (read by Compose) and `.mysqlenv` (passed to the database
+container). Neither file is tracked by git; copy the `.example` versions to create them.
 
 | Variable                   | Default         | Used by         |
 |----------------------------|-----------------|-----------------|
 | `SPRING_PROFILES_ACTIVE`   | `docker`        | Spring Boot     |
-| `MYSQL_HOST`               | `mysqldb`       | Spring Boot     |
-| `MYSQL_USER`               | `root`          | Spring Boot     |
-| `MYSQL_PASSWORD`           | `root`          | Spring Boot     |
-| `MYSQL_PORT`               | `3306`          | Spring Boot     |
-| `MYSQL_DATABASE`           | `miola`         | MySQL           |
-| `MYSQL_ROOT_PASSWORD`      | `root`          | MySQL           |
+| `MYSQL_HOST`               | from `.env`     | Spring Boot     |
+| `MYSQL_USER`               | from `.env`     | Spring Boot     |
+| `MYSQL_PASSWORD`           | from `.env`     | Spring Boot     |
+| `MYSQL_PORT`               | from `.env`     | Spring Boot     |
+| `MYSQL_DATABASE`           | from `.mysqlenv`| MySQL           |
+| `MYSQL_ROOT_PASSWORD`      | from `.mysqlenv`| MySQL           |
 | `REACT_APP_API_BASE_URL`   | `http://localhost:9090` | React   |
 
 ### Key Config Files
@@ -273,6 +292,7 @@ docker compose -f docker-compose.yml exec mysqldb mysql -uroot -p<password> miol
 | `application.properties`            | Default profile — H2 in-memory DB (local dev)    |
 | `application-docker.properties`     | Docker profile — MySQL connection + HikariCP     |
 | `SecurityConfig.java`               | Users, passwords, CORS, endpoint security        |
+| `.env` / `.mysqlenv`                | Local credentials (git-ignored, from `.example`) |
 
 ---
 

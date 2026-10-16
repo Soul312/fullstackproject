@@ -39,3 +39,7 @@ out/
 ### Misc ###
 tmp.txt
 /package-lock.json
+
+### Local environment files (copy the .example files and fill in your own values)
+.env
+.mysqlenv
